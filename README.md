@@ -1,4 +1,4 @@
-# Sentiment Analysis of Tweets Directed at @Apple Before and After Quarterly Results
+# Sentiment Analysis of Tweets directed at @Apple Before and After Quarterly Results
 
 This project performs sentiment analysis on tweets directed at Apple before and after its quarterly results announcement. It aims to explore how sentiment changed before and after the announcement, providing insights into public perceptions.
 
