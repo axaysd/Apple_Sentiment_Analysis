@@ -1,0 +1,144 @@
+---
+title: "Sentiment analysis of tweets directed at @Apple Before and After its Quarterly results announcement."
+output: html_notebook
+---
+
+#### Importing the tweet data directed at Apple before its quarterly results from CSV file and building a Corpus of that
+```{r}
+# Importing text mining (tm) library
+library(tm)
+
+# Read file
+apple_tweets <- read.csv('apple_pre_earnings.csv', header=T)
+
+# Changing character encoding of data in text column to UTF-8
+apple_tweets_utf8 <- iconv(apple_tweets$text, to = 'utf-8')
+
+# Converting the data into Corpus format
+apple_corpus <- Corpus(VectorSource(apple_tweets_utf8))
+
+# View the content of the 1st 5 documents in the corpus
+inspect(apple_corpus[1:5])
+```
+
+#### Cleaning the data
+```{r}
+# Converting all text to lower case
+apple_corpus <- tm_map(apple_corpus, tolower)
+inspect(apple_corpus[1:5])
+
+# Removing all punctuations
+apple_corpus <- tm_map(apple_corpus, removePunctuation)
+inspect(apple_corpus[1:5])
+
+# Removing all numbers
+apple_corpus <- tm_map(apple_corpus, removeNumbers)
+inspect(apple_corpus[1:5])
+
+# Removing most-commonly used English words as they don't provide any value
+cleanset <- tm_map(apple_corpus, removeWords, stopwords('english'))
+inspect(cleanset[1:5])
+
+# Removing URL's
+removeURL <- function(x) gsub('http[[:alnum:]]*', '', x)
+cleanset <- tm_map(cleanset, content_transformer(removeURL))
+inspect(cleanset[1:5])
+
+# Removing aapl and apple as they would appear very frequently but provide little value
+cleanset <- tm_map(cleanset, removeWords, c('aapl', 'apple'))
+inspect(cleanset[1:5])
+
+# Replacing stocks with stock so they don't get double counted
+cleanset <- tm_map(cleanset, gsub, pattern='stocks', replacement='stock')
+
+# Strip whitespaces
+cleanset <- tm_map(cleanset, stripWhitespace)
+inspect(cleanset[1:5])
+```
+#### Using Term-Document Matrix (TDM) data structure to find patterns and extract info.\ 
+#### It helps us convert the unstructured data into structured rows and columns.
+```{r}
+# Converting cleanset into a TDM data structure
+tdm <- TermDocumentMatrix(cleanset)
+tdm
+# Converting TDM to matrix
+tdm <- as.matrix(tdm)
+# Display the first 10 words from 20 columns
+tdm[1:10, 1:20]
+```
+
+#### Plotting a bar plot
+```{r}
+# Finding rowsum i.e. frequency count for each word
+w <- rowSums(tdm)
+
+# Filtering out words that have frequency less than 25
+w <- subset(w, w>=25)
+
+# Plotting the barplot 
+barplot(w, las=2, col = rainbow(50))
+```
+
+#### Creating a wordcloud out of our data
+```{r}
+library(wordcloud)
+w <- sort(rowSums(tdm), decreasing=TRUE)
+set.seed(222)
+wordcloud(
+  words=names(w), 
+  freq = w, 
+  max.words=150, 
+  random.order=FALSE, 
+  colors=brewer.pal(8, 'Dark2'), 
+  scale=c(5, 0.3), 
+  rot.per=0.3)
+```
+
+### Performing Sentiment analysis for tweets directed at @Apple BEFORE it announced its Quarterly earnings
+```{r}
+library(syuzhet)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(reshape2)
+library(dplyr)
+
+# Read file
+apl_tweets <- read.csv('apple_pre_earnings.csv', header=T)
+apl_tweets_utf8 <- iconv(apl_tweets$text, to='utf-8')
+
+# Obtaining sentiment scores
+sentiments <- get_nrc_sentiment(apl_tweets_utf8)
+sentiments
+```
+
+#### Plotting barplot for every tweets sentiments BEFORE it announced its Quarterly earnings
+```{r}
+barplot(colSums(sentiments),
+        las = 2,
+        col = rainbow(10),
+        ylab = 'Count',
+        main = 'Sentiment Scores of Tweets directed at Apple BEFORE its quarterly earnings')
+```
+
+### Performing Sentiment analysis for tweets directed at @Apple AFTER it announced its Quarterly earnings
+```{r}
+# Read file
+apl_post_tweets <- read.csv('apple_post_earnings.csv', header=T)
+apl_post_tweets_utf8 <- iconv(apl_post_tweets$text, to='utf-8')
+
+# Obtaining sentiment scores
+sentiments_post <- get_nrc_sentiment(apl_post_tweets_utf8)
+sentiments_post
+```
+
+#### Plotting barplot for every tweets sentiments AFTER it announced its Quarterly earnings
+```{r}
+barplot(colSums(sentiments_post),
+        las = 2,
+        col = rainbow(10),
+        ylab = 'Count',
+        main = 'Sentiment Scores of Tweets directed at Apple AFTER its quarterly earnings')
+```
+
+## <u>Conclusion</u>: Thus, we see that after Apple published its Quartlerly earnings, there is a decrease in negative emotions and increase in positive emotions.
