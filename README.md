@@ -13,35 +13,35 @@ Make sure you have the required R packages installed:
 
 ## Data Preparation
 
-1. Import the tweet data for Apple before its quarterly results from the 'apple_pre_earnings.csv' CSV file.
-2. Change the character encoding of the text column to UTF-8 for proper text processing.
-3. Convert the data into a corpus using the `tm` package to enable text mining operations.
+1. Imported the tweet data for Apple before its quarterly results from the 'apple_pre_earnings.csv' CSV file.
+2. Changed the character encoding of the text column to UTF-8 for proper text processing.
+3. Converted the data into a corpus using the `tm` package to enable text mining operations.
 
 ## Data Cleaning
 
-1. Convert all text to lowercase using `tm_map`.
-2. Remove punctuation, numbers, and common English stopwords.
-3. Remove URLs, mentions, and specific words like 'aapl' and 'apple'.
-4. Replace 'stocks' with 'stock' to avoid double counting.
-5. Strip extra whitespace from the text.
+1. Converted all text to lowercase using `tm_map`.
+2. Removed punctuation, numbers, and common English stopwords.
+3. Removed URLs, mentions, and specific words like 'aapl' and 'apple'.
+4. Replaced 'stocks' with 'stock' to avoid double counting.
+5. Stripped extra whitespace from the text.
 
 ## Term-Document Matrix (TDM)
 
-1. Convert the cleaned corpus into a Term-Document Matrix (TDM) to analyze word frequencies.
-2. Display the first 10 words from the TDM for a quick overview.
+1. Converted the cleaned corpus into a Term-Document Matrix (TDM) to analyze word frequencies.
+2. Displayed the first 10 words from the TDM for a quick overview.
 
 ## Bar Plot and Word Cloud
 
-1. Generate a bar plot of word frequencies to visualize the most frequent words.
-2. Filter out words with a frequency less than 25 to focus on significant words.
-3. Create a word cloud for a visually appealing representation of word frequencies.
+1. Generated a bar plot of word frequencies to visualize the most frequent words.
+2. Filtered out words with a frequency less than 25 to focus on significant words.
+3. Created a word cloud for a visually appealing representation of word frequencies.
 
 ## Sentiment Analysis
 
-1. Import the tweet data for Apple after its quarterly results from the 'apple_post_earnings.csv' CSV file.
-2. Perform sentiment analysis using the `syuzhet` package to obtain sentiment scores.
-3. Plot a bar plot of sentiment scores for tweets directed at Apple before the announcement.
-4. Plot a bar plot of sentiment scores for tweets directed at Apple after the announcement.
+1. Imported the tweet data for Apple after its quarterly results from the 'apple_post_earnings.csv' CSV file.
+2. Performed sentiment analysis using the `syuzhet` package to obtain sentiment scores.
+3. Plotted a bar plot of sentiment scores for tweets directed at Apple before the announcement.
+4. Plotted a bar plot of sentiment scores for tweets directed at Apple after the announcement.
 
 ## Conclusion
 
